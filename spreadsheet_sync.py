@@ -5,10 +5,10 @@ import os
 app = Flask(__name__)
 
 # Konfigurasi Database (Ambil dari Environment Variable biar aman)
-DB_HOST = os.environ.get("DB_HOST", "ep-sg-kamu.aws.neon.tech")
+DB_HOST = os.environ.get("DB_HOST")
 DB_NAME = os.environ.get("DB_NAME", "neondb")
 DB_USER = os.environ.get("DB_USER", "neondb_owner")
-DB_PASS = os.environ.get("DB_PASS", "npg_password_kamu")
+DB_PASS = os.environ.get("DB_PASS")
 
 def get_db_connection():
     conn = psycopg2.connect(
@@ -37,7 +37,7 @@ def upload_data():
 
         # 3. Masukkan data (Looping insert)
         # Query disesuaikan dengan jumlah kolom kamu
-        sql = "INSERT INTO nama_tabel_kamu (kolom1, kolom2, kolom3) VALUES (%s, %s, %s)"
+        sql = "INSERT INTO products (name, price, description) VALUES (%s, %s, %s)"
         
         # Eksekusi batch (lebih cepat)
         cur.executemany(sql, data)
@@ -57,7 +57,7 @@ def download_data():
         conn = get_db_connection()
         cur = conn.cursor()
         
-        cur.execute("SELECT * FROM nama_tabel_kamu")
+        cur.execute("SELECT * FROM products")
         rows = cur.fetchall()
         
         # Ambil header kolom
@@ -72,4 +72,5 @@ def download_data():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
+
     app.run(debug=True)
